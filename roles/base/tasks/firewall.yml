@@ -1,0 +1,28 @@
+---
+- name: Validate parameters
+  ansible.builtin.assert:
+    that:
+      - firewall_base_public_interface is string
+
+- name: Configure base firewall
+  ansible.builtin.import_role:
+    name: fedora.linux_system_roles.firewall
+  vars:
+    firewall:
+      # Start from scratch instead of appending rules to unknown existing
+      # rules.
+      - previous: replaced
+      # Settings for all zones.
+      - service: dhcpv6-client
+        state: enabled
+      # Settings for the public zone.
+      - interface: "{{ firewall_base_public_interface }}"
+        zone: public
+        state: enabled
+      - service: ssh
+        zone: public
+        state: enabled
+      - service: cockpit
+        zone: public
+        state: disabled
+  when: firewall_base_manage_firewall

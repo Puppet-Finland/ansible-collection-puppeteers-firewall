@@ -1,0 +1,3 @@
+---
+- name: Set up base firewall
+  ansible.builtin.import_tasks: "firewall.yml"
