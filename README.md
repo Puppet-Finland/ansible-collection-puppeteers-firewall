@@ -11,3 +11,5 @@ Configure very basic firewall settings for the "public" zone. Parameters:
 
 * *firewall_base_manage_firewall:* whether to actually manage firewalld rules or not
 * *firewall_base_public_interface:* the identifier for the public interface
+
+Existing firewall rules are not purged.

@@ -9,9 +9,6 @@
     name: fedora.linux_system_roles.firewall
   vars:
     firewall:
-      # Start from scratch instead of appending rules to unknown existing
-      # rules.
-      - previous: replaced
       # Settings for all zones.
       - service: dhcpv6-client
         state: enabled
