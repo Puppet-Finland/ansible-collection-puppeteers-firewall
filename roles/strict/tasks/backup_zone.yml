@@ -1,0 +1,44 @@
+---
+- name: Validate backup zone parameters
+  ansible.builtin.assert:
+    that:
+      - puppeteers_firewall_strict_backup_zone is string
+      - "puppeteers_firewall_strict_backup_source | ansible.utils.ipaddr is truthy"
+      - puppeteers_firewall_strict_backup_source_allow_ports is not string and puppeteers_firewall_strict_backup_source_allow_ports is iterable
+      - puppeteers_firewall_strict_backup_source_allow_services is not string and puppeteers_firewall_strict_backup_source_allow_services is iterable
+
+- name: Create backup firewall zone
+  ansible.posix.firewalld:
+    zone: "{{ puppeteers_firewall_strict_backup_zone }}"
+    state: present
+    permanent: true
+  notify: Reload firewalld to activate new zones
+
+- name: Reload firewalld if necessary
+  meta: flush_handlers
+
+- name: Allow services from backup server
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_backup_zone }}"
+    service: "{{ item }}"
+  loop: "{{ puppeteers_firewall_strict_backup_source_allow_services }}"
+
+- name: Allow ports from backup server
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_backup_zone }}"
+    port: "{{ item }}"
+  loop: "{{ puppeteers_firewall_strict_backup_source_allow_ports }}"
+
+- name: Set source for backup zone
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_backup_zone }}"
+    source: "{{ puppeteers_firewall_strict_backup_source }}"

@@ -1,0 +1,30 @@
+---
+- name: Validate parameters
+  ansible.builtin.assert:
+    that:
+      - puppeteers_firewall_strict_manage_backup_zone is boolean
+      - puppeteers_firewall_strict_manage_monitoring_zone is boolean
+      - puppeteers_firewall_strict_manage_vpn_zone is boolean
+      - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
+
+- name: Manage VPN zone 
+  ansible.builtin.import_tasks: vpn_zone.yml
+  when: puppeteers_firewall_strict_manage_vpn_zone 
+
+- name: Manage backup zone
+  ansible.builtin.import_tasks: backup_zone.yml
+  when: puppeteers_firewall_strict_manage_backup_zone 
+
+- name: Manage monitoring zone
+  ansible.builtin.import_tasks: monitoring_zone.yml
+  when: puppeteers_firewall_strict_manage_monitoring_zone 
+
+- name: Assign interfaces to the drop zone to prevent leaks
+  ansible.posix.firewalld:
+    state: enabled
+    zone: drop
+    interface: "{{ item }}"
+    immediate: true
+    permanent: true
+  when: item in ansible_facts['interfaces']
+  loop: "{{ puppeteers_firewall_strict_assign_to_drop_zone }}"

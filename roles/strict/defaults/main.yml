@@ -1,0 +1,18 @@
+puppeteers_firewall_strict_manage_backup_zone: true
+puppeteers_firewall_strict_backup_zone: backup
+puppeteers_firewall_strict_backup_source_allow_ports: []
+puppeteers_firewall_strict_backup_source_allow_services:
+  - ssh
+
+puppeteers_firewall_strict_manage_monitoring_zone: true
+puppeteers_firewall_strict_monitoring_zone: monitoring
+puppeteers_firewall_strict_monitoring_source_allow_ports:
+  - 9100/tcp
+puppeteers_firewall_strict_monitoring_source_allow_services: []
+
+puppeteers_firewall_strict_manage_vpn_zone: true
+puppeteers_firewall_strict_vpn_zone: vpn
+puppeteers_firewall_strict_vpn_source_allow_ports: []
+puppeteers_firewall_strict_vpn_source_allow_services:
+  - ssh
+puppeteers_firewall_strict_assign_to_drop_zone: []

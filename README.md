@@ -13,3 +13,34 @@ Configure very basic firewall settings for the "public" zone. Parameters:
 * *firewall_base_public_interface:* the identifier for the public interface
 
 Existing firewall rules are not purged.
+
+## strict
+
+This role sets up a very strict firewalld rules that split traffic into zones based on the source IPs:
+
+* VPN traffic (SSH service by default)
+* Backup traffic (SSH service by default)
+* Monitoring traffic (port 9100, i.e. Node Exporter) by default
+
+Additionally the role can attach a list of interfaces to the "drop" zone,
+effectively disabling all traffic that is not explicitly authorized above:
+
+    puppeteers_firewall_strict_assign_to_drop_zone:
+      - eth0
+      - eth1
+
+You can disable certain zones by setting their respective manage parameters to false:
+
+* puppeteers_firewall_strict_manage_vpn_zone
+* puppeteers_firewall_strict_manage_backup_zone
+* puppeteers_firewall_strict_manage_monitoring_zone
+
+At minimum, you need to define the source IPs for each zone you wish to manage:
+
+    puppeteers_firewall_strict_backup_source: '10.15.0.10/32'
+    puppeteers_firewall_strict_monitoring_source: '10.15.0.20/32'
+    puppeteers_firewall_strict_vpn_source: '10.174.12.0/24'
+
+These IPs / IP ranges may not overlap.
+
+You can define which services and/or ports to allow for each zone. See [roles/strict/defaults/main.yml](roles/strict/defaults/main.yml) for details.

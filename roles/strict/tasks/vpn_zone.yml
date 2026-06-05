@@ -1,0 +1,44 @@
+---
+- name: Validate VPN zone parameters
+  ansible.builtin.assert:
+    that:
+      - puppeteers_firewall_strict_vpn_zone is string
+      - "puppeteers_firewall_strict_vpn_source | ansible.utils.ipaddr is truthy"
+      - puppeteers_firewall_strict_vpn_source_allow_ports is not string and puppeteers_firewall_strict_vpn_source_allow_ports is iterable
+      - puppeteers_firewall_strict_vpn_source_allow_services is not string and puppeteers_firewall_strict_vpn_source_allow_services is iterable
+
+- name: Create VPN firewall zone
+  ansible.posix.firewalld:
+    zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    state: present
+    permanent: true
+  notify: Reload firewalld to activate new zones
+
+- name: Reload firewalld if necessary
+  meta: flush_handlers
+
+- name: Allow services from VPN clients
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    service: "{{ item }}"
+  loop: "{{ puppeteers_firewall_strict_vpn_source_allow_services }}"
+
+- name: Allow ports from VPN clients
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    port: "{{ item }}"
+  loop: "{{ puppeteers_firewall_strict_vpn_source_allow_ports }}"
+
+- name: Set source for VPN zone
+  ansible.posix.firewalld:
+    state: enabled
+    immediate: true
+    permanent: true
+    zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    source: "{{ puppeteers_firewall_strict_vpn_source }}"
