@@ -21,4 +21,10 @@ puppeteers_firewall_strict_vpn_zone: 50_vpn
 puppeteers_firewall_strict_vpn_source_allow_ports: []
 puppeteers_firewall_strict_vpn_source_allow_services:
   - ssh
+
+puppeteers_firewall_strict_manage_intranet_zone: true
+puppeteers_firewall_strict_intranet_zone: 51_intranet
+puppeteers_firewall_strict_intranet_source_allow_ports: []
+puppeteers_firewall_strict_intranet_source_allow_services: []
+
 puppeteers_firewall_strict_assign_to_drop_zone: []

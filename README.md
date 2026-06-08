@@ -18,9 +18,11 @@ Existing firewall rules are not purged.
 
 This role sets up a very strict firewalld rules that split traffic into zones based on the source IPs:
 
-* VPN traffic (zone name: 50_vpn, SSH service by default)
 * Backup traffic (zone name: 10_backup, SSH service by default)
-* Monitoring traffic (zone name: 11_monitoring, port 9100, i.e. Node Exporter) by default
+* Monitoring traffic (zone name: 11_monitoring, port 9100, i.e. Node Exporter by default)
+* VPN traffic (zone name: 50_vpn, SSH service by default)
+* Intranet traffic (zone name: 51_intranet, nothing allowed by default)
+    * This zone can be used on servers that provide services for the intranet (e.g. LDAP, Kerberos and DNS)
 
 The rules are prefixed with numbers for a reason: firewalld loads zone
 configuration in alphabetical order and uses the rules that match first. In
