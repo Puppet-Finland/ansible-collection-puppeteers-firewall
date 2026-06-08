@@ -45,10 +45,15 @@ You can disable certain zones by setting their respective manage parameters to f
 
 At minimum, you need to define the source IPs for each zone you wish to manage:
 
-    puppeteers_firewall_strict_backup_source: '10.15.0.10/32'
-    puppeteers_firewall_strict_monitoring_source: '10.15.0.20/32'
-    puppeteers_firewall_strict_vpn_source: '10.174.12.0/24'
+    puppeteers_firewall_strict_backup_source:
+      - '10.15.0.10/32'
+    puppeteers_firewall_strict_monitoring_source:
+      - '10.15.0.20/32'
+    puppeteers_firewall_strict_vpn_source:
+      - '10.174.12.0/24'
 
-These IPs / IP ranges may not overlap.
+These IPs / IP ranges may not be identical, but can overlap. As mentioned
+above, though, the rules are loaded in alphabetical order by zone name with
+first match defining the zone the packets are handled by.
 
 You can define which services and/or ports to allow for each zone. See [roles/strict/defaults/main.yml](roles/strict/defaults/main.yml) for details.

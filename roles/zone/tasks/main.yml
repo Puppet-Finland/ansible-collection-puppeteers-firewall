@@ -3,9 +3,15 @@
   ansible.builtin.assert:
     that:
       - puppeteers_firewall_zone_name is string
-      - "puppeteers_firewall_zone_source | ansible.utils.ipaddr is truthy"
+      - puppeteers_firewall_zone_source is not string and puppeteers_firewall_zone_source is iterable
       - puppeteers_firewall_zone_source_allow_ports is not string and puppeteers_firewall_zone_source_allow_ports is iterable
       - puppeteers_firewall_zone_source_allow_services is not string and puppeteers_firewall_zone_source_allow_services is iterable
+
+- name: Validate zone sources
+  ansible.builtin.assert:
+    that:
+      - "item | ansible.utils.ipaddr is truthy"
+  loop: "{{ puppeteers_firewall_zone_source }}"
 
 - name: Create firewall zone
   ansible.posix.firewalld:
@@ -35,10 +41,11 @@
     port: "{{ item }}"
   loop: "{{ puppeteers_firewall_zone_source_allow_ports }}"
 
-- name: Set zone source
+- name: Set zone sources
   ansible.posix.firewalld:
     state: enabled
     immediate: true
     permanent: true
     zone: "{{ puppeteers_firewall_zone_name }}"
-    source: "{{ puppeteers_firewall_zone_source }}"
+    source: "{{ item }}"
+  loop: "{{ puppeteers_firewall_zone_source }}"
