@@ -18,9 +18,15 @@ Existing firewall rules are not purged.
 
 This role sets up a very strict firewalld rules that split traffic into zones based on the source IPs:
 
-* VPN traffic (SSH service by default)
-* Backup traffic (SSH service by default)
-* Monitoring traffic (port 9100, i.e. Node Exporter) by default
+* VPN traffic (zone name: 50_vpn, SSH service by default)
+* Backup traffic (zone name: 10_backup, SSH service by default)
+* Monitoring traffic (zone name: 11_monitoring, port 9100, i.e. Node Exporter) by default
+
+The rules are prefixed with numbers for a reason: firewalld loads zone
+configuration in alphabetical order and uses the rules that match first. In
+other words more specific rules (e.g. single-IP zones) need to be defined
+before more generic rules (e.g. match a network). For details see [this
+article](https://access.redhat.com/solutions/5663141).
 
 Additionally the role can attach a list of interfaces to the "drop" zone,
 effectively disabling all traffic that is not explicitly authorized above:
