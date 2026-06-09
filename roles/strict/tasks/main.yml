@@ -57,3 +57,8 @@
     permanent: true
   when: item in ansible_facts['interfaces']
   loop: "{{ puppeteers_firewall_strict_assign_to_drop_zone }}"
+
+- name: Set default zone to drop to prevent leaks
+  ansible.builtin.command:
+    cmd: "firewall-cmd --set-default-zone=drop"
+  when: puppeteers_firewall_strict_assign_to_drop_zone | length > 0
