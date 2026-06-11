@@ -27,4 +27,12 @@ puppeteers_firewall_strict_intranet_zone: 51_intranet
 puppeteers_firewall_strict_intranet_source_allow_ports: []
 puppeteers_firewall_strict_intranet_source_allow_services: []
 
+puppeteers_firewall_strict_manage_internet_zone: false
+puppeteers_firewall_strict_internet_zone: 80_internet
+puppeteers_firewall_strict_internet_source:
+  - "0.0.0.0/0"
+  - "::/0"
+puppeteers_firewall_strict_internet_source_allow_ports: []
+puppeteers_firewall_strict_internet_source_allow_services: []
+
 puppeteers_firewall_strict_assign_to_drop_zone: []

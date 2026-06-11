@@ -6,6 +6,7 @@
       - puppeteers_firewall_strict_manage_monitoring_zone is boolean
       - puppeteers_firewall_strict_manage_vpn_zone is boolean
       - puppeteers_firewall_strict_manage_intranet_zone is boolean
+      - puppeteers_firewall_strict_manage_internet_zone is boolean
       - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
 
 - name: Manage VPN zone
@@ -47,6 +48,16 @@
     puppeteers_firewall_zone_source_allow_ports: "{{ puppeteers_firewall_strict_intranet_source_allow_ports }}"
     puppeteers_firewall_zone_source_allow_services: "{{ puppeteers_firewall_strict_intranet_source_allow_services }}"
   when: puppeteers_firewall_strict_manage_intranet_zone
+
+- name: Manage internet zone
+  ansible.builtin.import_role:
+    name: puppeteers.firewall.zone
+  vars:
+    puppeteers_firewall_zone_name: "{{ puppeteers_firewall_strict_internet_zone }}"
+    puppeteers_firewall_zone_source: "{{ puppeteers_firewall_strict_internet_source }}"
+    puppeteers_firewall_zone_source_allow_ports: "{{ puppeteers_firewall_strict_internet_source_allow_ports }}"
+    puppeteers_firewall_zone_source_allow_services: "{{ puppeteers_firewall_strict_internet_source_allow_services }}"
+  when: puppeteers_firewall_strict_manage_internet_zone
 
 - name: Assign interfaces to the drop zone to prevent leaks
   ansible.posix.firewalld:
