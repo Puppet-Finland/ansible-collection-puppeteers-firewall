@@ -23,6 +23,7 @@ This role sets up a very strict firewalld rules that split traffic into zones ba
 * VPN traffic (zone name: 50_vpn, SSH service by default)
 * Intranet traffic (zone name: 51_intranet, nothing allowed by default)
     * This zone can be used on servers that provide services for the intranet (e.g. LDAP, Kerberos and DNS)
+    * If you want to enable ICMP/ICMPv6 between intranet servers you should enable this; no services or ports need to be opened for it.
 * Internet traffic (zone name: 80_internet, disabled  by default, nothing allowed by default)
     * This zone can be used on servers that provide services for the internet (e.g. web servers)
 
