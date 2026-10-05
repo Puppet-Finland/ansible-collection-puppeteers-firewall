@@ -16,6 +16,12 @@
       - firewalld
       - python3-firewall
 
+- name: Ensure firewalld is running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enable: true
+
 - name: Manage VPN zone
   ansible.builtin.import_role:
     name: puppeteers.firewall.zone

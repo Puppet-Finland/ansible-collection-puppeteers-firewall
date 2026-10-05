@@ -16,7 +16,9 @@ Existing firewall rules are not purged.
 
 ## strict
 
-This role sets up a very strict firewalld rules that split traffic into zones based on the source IPs:
+This role ensures that firewalld and python3-firewall packages are installed,
+starts and enables firewalld service and then sets up a very strict firewalld
+rules that split traffic into zones based on the source IPs:
 
 * Backup traffic (zone name: 10_backup, SSH service by default)
 * Monitoring traffic (zone name: 11_monitoring, port 9100, i.e. Node Exporter by default)
