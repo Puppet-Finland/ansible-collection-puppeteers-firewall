@@ -9,6 +9,13 @@
       - puppeteers_firewall_strict_manage_internet_zone is boolean
       - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
 
+- name: Ensure that dependencies are installed
+  ansible.builtin.package:
+    state: present
+    name:
+      - firewalld
+      - python3-firewall
+
 - name: Manage VPN zone
   ansible.builtin.import_role:
     name: puppeteers.firewall.zone
