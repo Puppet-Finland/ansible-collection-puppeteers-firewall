@@ -20,7 +20,7 @@
   ansible.builtin.service:
     name: firewalld
     state: started
-    enable: true
+    enabled: true
 
 - name: Manage VPN zone
   ansible.builtin.import_role:
