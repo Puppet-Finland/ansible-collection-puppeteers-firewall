@@ -1,0 +1,16 @@
+---
+- name: Enable firewalld management on hosts that need
+  when: puppeteers_firewall_firewalld_prerequisites_manage
+  block:
+    - name: Install ansible.posix.firewalld prerequisites
+      ansible.builtin.package:
+        name:
+          - python3-firewall
+          - firewalld
+        state: present
+
+    - name: Enable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true

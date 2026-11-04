@@ -5,6 +5,16 @@ derivatives.
 
 # Roles
 
+## firewalld_prerequisites
+
+This role installs *firewalld* and *python3-firewall*. It also enables and
+starts the *firewalld* service. It is primarily intended to be included early
+on in the playbook run to ensure that other roles that might add firewalld
+rules can do so. If you wish to disable this role's action on some host or
+group use
+
+    puppeteers_firewall_firewalld_prerequisites_manage: false
+
 ## base
 
 Configure very basic firewall settings for the "public" zone. Parameters:
