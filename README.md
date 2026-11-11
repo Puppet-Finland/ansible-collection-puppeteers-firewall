@@ -72,3 +72,7 @@ above, though, the rules are loaded in alphabetical order by zone name with
 first match defining the zone the packets are handled by.
 
 You can define which services and/or ports to allow for each zone. See [roles/strict/defaults/main.yml](roles/strict/defaults/main.yml) for details.
+
+To enable forwarding from the VPN zone to the intranet zone set this variable:
+
+    puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding: true

@@ -7,6 +7,7 @@
       - puppeteers_firewall_strict_manage_vpn_zone is boolean
       - puppeteers_firewall_strict_manage_intranet_zone is boolean
       - puppeteers_firewall_strict_manage_internet_zone is boolean
+      - puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding is boolean
       - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
 
 - name: Ensure that dependencies are installed
@@ -71,6 +72,10 @@
     puppeteers_firewall_zone_source_allow_ports: "{{ puppeteers_firewall_strict_internet_source_allow_ports }}"
     puppeteers_firewall_zone_source_allow_services: "{{ puppeteers_firewall_strict_internet_source_allow_services }}"
   when: puppeteers_firewall_strict_manage_internet_zone
+
+- name: Add forwarding from VPN to Intranet
+  ansible.builtin.import_tasks: allow_vpn_to_intranet.yml
+  when: puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding
 
 - name: Assign interfaces to the drop zone to prevent leaks
   ansible.posix.firewalld:

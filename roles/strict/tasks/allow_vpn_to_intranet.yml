@@ -1,0 +1,30 @@
+- name: Set policy and zone names
+  ansible.builtin.set_fact:
+    policy_name: vpnToInternal
+    ingress_zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    egress_zone: "{{ puppeteers_firewall_strict_intranet_zone }}"
+
+- name: Check if policy exists
+  ansible.builtin.command:
+    cmd: "firewall-cmd --info-policy {{ policy_name }}"
+  register: policy_check
+  ignore_errors: true
+
+- name: Add policy
+  ansible.builtin.command:
+    cmd: "firewall-cmd --permanent --new-policy {{ policy_name }}"
+  when: policy_check.rc == 140
+
+- name: Add policy rules
+  ansible.builtin.command:
+    cmd: "firewall-cmd --permanent --policy {{ policy_name }} {{ item }}"
+  loop:
+    - "--add-ingress-zone {{ ingress_zone }}"
+    - "--add-egress-zone {{ egress_zone }}"
+    - "--set-target ACCEPT"
+  when: policy_check.rc == 140
+
+- name: Reload firewalld rules
+  ansible.builtin.command:
+    cmd: "firewall-cmd --reload"
+  when: policy_check.rc == 140
