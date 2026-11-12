@@ -6,6 +6,7 @@
       - puppeteers_firewall_zone_source is not string and puppeteers_firewall_zone_source is iterable
       - puppeteers_firewall_zone_source_allow_ports is not string and puppeteers_firewall_zone_source_allow_ports is iterable
       - puppeteers_firewall_zone_source_allow_services is not string and puppeteers_firewall_zone_source_allow_services is iterable
+      - puppeteers_firewall_zone_forward is boolean
 
 - name: Validate zone sources
   ansible.builtin.assert:
@@ -49,3 +50,27 @@
     zone: "{{ puppeteers_firewall_zone_name }}"
     source: "{{ item }}"
   loop: "{{ puppeteers_firewall_zone_source }}"
+
+- name: Check if intra-zone forwarding is enabled
+  ansible.builtin.command:
+    cmd: "firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --query-forward"
+  register: query_forward
+  ignore_errors: true
+
+- name: Debug
+  ansible.builtin.debug:
+    var: query_forward
+
+- name: Debug
+  ansible.builtin.debug:
+    var: puppeteers_firewall_zone_forward
+
+- name: Add intra-zone forwarding
+  ansible.builtin.shell:
+    cmd: "firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --add-forward && firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --add-forward --permanent"
+  when: query_forward.rc == 1 and puppeteers_firewall_zone_forward
+
+- name: Remove intra-zone forwarding
+  ansible.builtin.shell:
+    cmd: "firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --remove-forward && firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --remove-forward --permanent"
+  when: query_forward.rc == 0 and not puppeteers_firewall_zone_forward

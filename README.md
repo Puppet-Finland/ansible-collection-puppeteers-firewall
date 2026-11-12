@@ -76,3 +76,7 @@ You can define which services and/or ports to allow for each zone. See [roles/st
 To enable forwarding from the VPN zone to the intranet zone set this variable:
 
     puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding: true
+
+To enable VPN client-to-client tarffic set this variable:
+
+    puppeteers_firewall_strict_vpn_zone_forward: true
