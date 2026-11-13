@@ -57,14 +57,6 @@
   register: query_forward
   ignore_errors: true
 
-- name: Debug
-  ansible.builtin.debug:
-    var: query_forward
-
-- name: Debug
-  ansible.builtin.debug:
-    var: puppeteers_firewall_zone_forward
-
 - name: Add intra-zone forwarding
   ansible.builtin.shell:
     cmd: "firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --add-forward && firewall-cmd --zone {{ puppeteers_firewall_zone_name }} --add-forward --permanent"
