@@ -9,6 +9,7 @@
       - puppeteers_firewall_strict_manage_internet_zone is boolean
       - puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding is boolean
       - puppeteers_firewall_strict_allow_intranet_to_vpn_forwarding is boolean
+      - puppeteers_firewall_strict_disable_networkmanager_zones is boolean
       - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
 
 - name: Ensure that dependencies are installed
@@ -96,6 +97,11 @@
     puppeteers_firewall_policy_ingress_zone: "{{ puppeteers_firewall_strict_intranet_zone }}"
     puppeteers_firewall_policy_egress_zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
   when: puppeteers_firewall_strict_allow_intranet_to_vpn_forwarding
+
+- name: Disable connection.zone parameter in every NetworkManager connection
+  ansible.builtin.import_role:
+    name: puppeteers.firewall.disable_nm_zones
+  when: puppeteers_firewall_strict_disable_networkmanager_zones
 
 - name: Assign interfaces to the drop zone to prevent leaks
   ansible.posix.firewalld:

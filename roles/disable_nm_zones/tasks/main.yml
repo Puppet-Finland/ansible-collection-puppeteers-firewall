@@ -1,0 +1,19 @@
+---
+- name: Test if nmcli is available
+  ansible.builtin.command:
+    cmd: which nmcli
+  register: which_nmcli
+  ignore_errors: true
+
+- name: Disable connection.zone for all connections
+  block:
+    - name: Get a list of NetworkManager connections
+      ansible.builtin.command:
+        cmd: nmcli -g NAME connection show
+      register: nmcli_system_connections
+
+    - name: Disable connection.zone for each connection
+      ansible.builtin.command:
+        cmd: "nmcli conn modify \"{{ item }}\" connection.zone \"\""
+      loop: "{{ nmcli_system_connections.stdout_lines }}"
+  when: which_nmcli.rc == 0

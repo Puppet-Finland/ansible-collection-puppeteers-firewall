@@ -80,3 +80,8 @@ To enable forwarding from the VPN zone to the intranet zone set this variable:
 To enable VPN client-to-client tarffic set this variable:
 
     puppeteers_firewall_strict_vpn_zone_forward: true
+
+NetworkManager sometimes attaches zones to connections and in the process
+creates zones not managed by this role (e.g. public). To prevent that use
+
+    puppeteers_firewall_strict_disable_networkmanager_zones: true
