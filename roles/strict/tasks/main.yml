@@ -8,6 +8,7 @@
       - puppeteers_firewall_strict_manage_intranet_zone is boolean
       - puppeteers_firewall_strict_manage_internet_zone is boolean
       - puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding is boolean
+      - puppeteers_firewall_strict_allow_intranet_to_vpn_forwarding is boolean
       - puppeteers_firewall_strict_assign_to_drop_zone is not string and puppeteers_firewall_strict_assign_to_drop_zone is iterable
 
 - name: Ensure that dependencies are installed
@@ -78,9 +79,23 @@
     puppeteers_firewall_zone_forward: false
   when: puppeteers_firewall_strict_manage_internet_zone
 
-- name: Add forwarding from VPN to Intranet
-  ansible.builtin.import_tasks: allow_vpn_to_intranet.yml
+- name: Allow traffic from VPN to intranet
+  ansible.builtin.import_role:
+    name: puppeteers.firewall.policy
+  vars:
+    puppeteers_firewall_policy_name: vpnToIntranet
+    puppeteers_firewall_policy_ingress_zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+    puppeteers_firewall_policy_egress_zone: "{{ puppeteers_firewall_strict_intranet_zone }}"
   when: puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding
+
+- name: Allow traffic from intranet to VPN
+  ansible.builtin.import_role:
+    name: puppeteers.firewall.policy
+  vars:
+    puppeteers_firewall_policy_name: intranetToVpn
+    puppeteers_firewall_policy_ingress_zone: "{{ puppeteers_firewall_strict_intranet_zone }}"
+    puppeteers_firewall_policy_egress_zone: "{{ puppeteers_firewall_strict_vpn_zone }}"
+  when: puppeteers_firewall_strict_allow_intranet_to_vpn_forwarding
 
 - name: Assign interfaces to the drop zone to prevent leaks
   ansible.posix.firewalld:

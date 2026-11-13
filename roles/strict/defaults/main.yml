@@ -35,7 +35,8 @@ puppeteers_firewall_strict_internet_source:
 puppeteers_firewall_strict_internet_source_allow_ports: []
 puppeteers_firewall_strict_internet_source_allow_services: []
 
-# Enable this on VPN servers
+# Enable these on VPN servers
 puppeteers_firewall_strict_allow_vpn_to_intranet_forwarding: false
+puppeteers_firewall_strict_allow_intranet_to_vpn_forwarding: false
 
 puppeteers_firewall_strict_assign_to_drop_zone: []

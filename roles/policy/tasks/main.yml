@@ -1,0 +1,37 @@
+- name: Validate parameters
+  ansible.builtin.assert:
+    that:
+      - puppeteers_firewall_policy_name is string
+      - puppeteers_firewall_policy_ingress_zone is string
+      - puppeteers_firewall_policy_egress_zone is string
+
+- name: Set policy and zone names
+  ansible.builtin.set_fact:
+    policy_name: "{{ puppeteers_firewall_policy_name }}"
+    ingress_zone: "{{ puppeteers_firewall_policy_ingress_zone }}"
+    egress_zone: "{{ puppeteers_firewall_policy_egress_zone }}"
+
+- name: Check if policy exists
+  ansible.builtin.command:
+    cmd: "firewall-cmd --info-policy {{ puppeteers_firewall_policy_name }}"
+  register: policy_check
+  ignore_errors: true
+
+- name: Add policy
+  ansible.builtin.command:
+    cmd: "firewall-cmd --permanent --new-policy {{ puppeteers_firewall_policy_name }}"
+  when: policy_check.rc == 140
+
+- name: Add policy rules
+  ansible.builtin.command:
+    cmd: "firewall-cmd --permanent --policy {{ puppeteers_firewall_policy_name }} {{ item }}"
+  loop:
+    - "--add-ingress-zone {{ puppeteers_firewall_policy_ingress_zone }}"
+    - "--add-egress-zone {{ puppeteers_firewall_policy_egress_zone }}"
+    - "--set-target ACCEPT"
+  when: policy_check.rc == 140
+
+- name: Reload firewalld rules
+  ansible.builtin.command:
+    cmd: "firewall-cmd --reload"
+  when: policy_check.rc == 140
